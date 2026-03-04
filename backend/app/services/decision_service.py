@@ -1,12 +1,16 @@
 from app.db.database import db
 from app.models.decision import Decision
 import math
+from app.utils.logger import logger
 
 
 class DecisionService:
 
     @staticmethod
     def create_decision(data):
+
+        logger.info(f"Creating decision: {data['title']}")
+
         decision = Decision(
             title=data["title"],
             description=data.get("description"),
@@ -32,8 +36,10 @@ class DecisionService:
     @staticmethod
     def update_outcome(decision_id, data):
         decision = Decision.query.get(decision_id)
+        logger.info(f"Updating outcome for decision {decision_id}")
 
         if not decision:
+            logger.error(f"Decision {decision_id} not found")
             return None
 
         decision.outcome = data["outcome"]
