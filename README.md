@@ -425,6 +425,8 @@ Key design choices include:
 
 The goal was to prioritize **clarity and functionality** rather than complex visual styling.
 
+---
+
 # Key Technical Decisions
 
 ## Service Layer Separation
