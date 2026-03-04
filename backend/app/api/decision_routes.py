@@ -1,12 +1,21 @@
 from flask import Blueprint, request, jsonify
 from app.services.decision_service import DecisionService
+from app.schemas.decision_schema import DecisionCreateSchema, OutcomeUpdateSchema
+from marshmallow import ValidationError
 
 decision_bp = Blueprint("decisions", __name__)
+
+create_schema = DecisionCreateSchema()
+outcome_schema = OutcomeUpdateSchema()
 
 
 @decision_bp.route("/decisions", methods=["POST"])
 def create_decision():
-    data = request.json
+
+    try:
+        data = create_schema.load(request.json)
+    except ValidationError as err:
+        return {"errors": err.messages}, 400
 
     decision = DecisionService.create_decision(data)
 
@@ -32,7 +41,10 @@ def get_decision(decision_id):
 
 @decision_bp.route("/decisions/<decision_id>/outcome", methods=["PATCH"])
 def update_outcome(decision_id):
-    data = request.json
+    try:
+        data = outcome_schema.load(request.json)
+    except ValidationError as err:
+        return {"errors": err.messages}, 400
 
     decision = DecisionService.update_outcome(decision_id, data)
 
