@@ -52,3 +52,9 @@ def update_outcome(decision_id):
         return {"error": "Decision not found"}, 404
 
     return decision.to_dict()
+
+
+@decision_bp.route("/analytics", methods=["GET"])
+def analytics():
+    data = DecisionService.get_analytics()
+    return jsonify(data)
