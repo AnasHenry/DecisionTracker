@@ -4,8 +4,6 @@ Decision Tracker is a lightweight system for recording decisions, tracking their
 
 The goal of the system is to help users understand how their **confidence in decisions compares with actual outcomes**, enabling better calibration of judgment and more reflective decision-making.
 
-This project was built as part of the **Better Software Associate Software Engineer assessment**.
-
 ---
 
 # Demo Overview
