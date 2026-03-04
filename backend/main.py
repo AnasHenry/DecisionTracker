@@ -2,9 +2,12 @@ from flask import Flask
 from app.db.database import init_db
 from app.models.decision import Decision
 from app.api.decision_routes import decision_bp
+from flask_cors import CORS
 
 def create_app():
     app = Flask(__name__)
+
+    CORS(app)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///decisions.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
