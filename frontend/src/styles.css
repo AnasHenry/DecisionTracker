@@ -12,6 +12,8 @@ body {
     padding: 40px 20px;
 }
 
+
+
 h1 {
     font-weight: 600;
     margin-bottom: 30px;
@@ -29,7 +31,7 @@ h3 {
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
 }
 
-.flex-box{
+.flex-box {
     margin: 10px 180px;
     display: flex;
     gap: 10px;
@@ -76,4 +78,33 @@ button:hover {
 
 .analytics p {
     margin: 5px 0;
+}
+
+.toast-error {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+
+    background: #ff5c5c;
+    color: white;
+
+    padding: 12px 18px;
+    border-radius: 8px;
+
+    font-size: 14px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

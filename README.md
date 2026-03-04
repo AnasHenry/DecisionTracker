@@ -19,6 +19,15 @@ The system emphasizes **clear architecture, correctness, and maintainability** r
 
 ---
 
+## 🎥 Project Walkthrough
+
+This video walkthrough explains the architecture, design decisions, AI usage, and tradeoffs made while building the Decision Tracker system.
+
+▶️ Watch the walkthrough:  
+https://drive.google.com/file/d/1W3Co4q8iSL5iQhzcqjeWzE3E8pG0IStG/view?usp=sharing
+
+---
+
 # Tech Stack
 
 ## Backend
@@ -265,23 +274,156 @@ The test suite uses an **in-memory SQLite database** to ensure isolation and rep
 
 ---
 
-# Frontend
+# Frontend Architecture
 
-The frontend is built with **React + TypeScript**.
+The frontend is implemented using **React with TypeScript** and is responsible for presenting the user interface and interacting with the backend API.
 
-Key characteristics:
+The frontend is intentionally structured to separate **UI components, API communication, and type definitions**, ensuring maintainability as the application grows.
 
-- typed API responses
-- separated API layer
-- minimal UI focused on functionality
-
-Main features:
-
-- decision creation form
-- decision list
-- analytics dashboard
+```
+src/
+│
+├── api/
+│   └── decisionApi.ts
+│
+├── components/
+│   ├── DecisionForm.tsx
+│   └── DecisionList.tsx
+│
+├── pages/
+│   └── Dashboard.tsx
+│
+└── types/
+    └── decision.ts
+```
 
 ---
+
+## API Layer
+
+The `api` folder centralizes communication with the backend REST API using **Axios**.
+
+Example functions:
+
+```
+getDecisions()
+createDecision()
+updateOutcome()
+getAnalytics()
+```
+
+This abstraction ensures that UI components remain focused on presentation logic while API communication is handled in a dedicated module. If API endpoints change, updates are required only in this layer.
+
+---
+
+## Type Safety
+
+TypeScript interfaces are used to define the structure of data received from the backend.
+
+Example entities include:
+
+```
+Decision
+Analytics
+```
+
+This approach ensures that frontend components interact with well-defined data structures, preventing runtime errors and improving maintainability.
+
+---
+
+## Dashboard Page
+
+The **Dashboard** acts as the primary page of the application.
+
+Responsibilities include:
+
+- fetching decision data from the backend
+- retrieving analytics summaries
+- coordinating UI components
+
+Data loading occurs when the component mounts using React hooks.
+
+```
+Dashboard
+   ↓
+API Layer
+   ↓
+Flask Backend
+   ↓
+Database
+```
+
+---
+
+## Decision Form
+
+The **DecisionForm component** allows users to create new decisions.
+
+It manages form state locally and sends requests to the backend API when the user submits the form.
+
+Client-side validation ensures that:
+
+- all fields are filled
+- confidence values remain between **0 and 100**
+
+If invalid input is detected, a toast notification informs the user before the request is sent to the backend.
+
+---
+
+## Decision List
+
+The **DecisionList component** displays recorded decisions and their current status.
+
+For decisions that are still pending, the interface provides controls for updating outcomes:
+
+```
+Mark Success
+Mark Failure
+Neutral
+```
+
+These actions trigger API requests that update the database and refresh analytics metrics.
+
+---
+
+## Frontend–Backend Interaction
+
+The frontend communicates with the backend through REST API requests.
+
+The data flow follows this pattern:
+
+```
+User Action
+   ↓
+React Component
+   ↓
+Axios API Request
+   ↓
+Flask Endpoint
+   ↓
+Database Update
+   ↓
+Updated Response
+   ↓
+React UI Update
+```
+
+This clear separation ensures that frontend components remain lightweight while backend services handle core business logic.
+
+---
+
+## UI Design Considerations
+
+The user interface intentionally follows a **minimal and calm layout** to improve readability and usability.
+
+Key design choices include:
+
+- card-based sections for content grouping
+- consistent spacing between elements
+- simple forms for decision input
+- clear status indicators for decision outcomes
+
+The goal was to prioritize **clarity and functionality** rather than complex visual styling.
 
 # Key Technical Decisions
 
@@ -379,7 +521,7 @@ Potential extensions include:
 ```
 cd backend
 python -m venv venv
-source venv/bin/activate
+venv\Scripts\activate 
 pip install -r requirements.txt
 python main.py
 ```

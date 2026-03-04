@@ -2,57 +2,76 @@ import { useState } from "react"
 import { createDecision } from "../api/decisionApi"
 
 interface Props {
-  refresh: () => void
+    refresh: () => void
 }
 
 function DecisionForm({ refresh }: Props) {
 
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
-  const [confidence, setConfidence] = useState<number>(0)
+    const [title, setTitle] = useState("")
+    const [description, setDescription] = useState("")
+    const [confidence, setConfidence] = useState<number>(0)
+    const [error, setError] = useState("")
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
 
-    await createDecision({
-      title,
-      description,
-      confidence
-    })
+        if (!title || !description) {
+            setError("Please fill all the fields")
 
-    setTitle("")
-    setDescription("")
-    setConfidence(0)
+            setTimeout(() => setError(""), 3000)
+            return
+        }
 
-    refresh()
-  }
+        if (confidence < 0 || confidence > 100) {
+            setError("Confidence must be between 0 and 100")
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <h3>Create Decision</h3>
+            setTimeout(() => setError(""), 3000)
+            return
+        }
 
-      <input
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      /><br />
+        await createDecision({
+            title,
+            description,
+            confidence
+        })
 
-      <input
-        placeholder="Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      /><br />
+        setTitle("")
+        setDescription("")
+        setConfidence(0)
 
-      <input
-        type="number"
-        placeholder="Confidence"
-        value={confidence}
-        onChange={(e) => setConfidence(Number(e.target.value))}
-      /><br />
+        refresh()
+    }
 
-      <button type="submit">Save</button>
-    </form>
-  )
+    return (
+        <>
+            {error && <div className="toast-error">{error}</div>}
+
+            <form onSubmit={handleSubmit}>
+                <h3>Create Decision</h3>
+
+                <input
+                    placeholder="Title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                />
+
+                <input
+                    placeholder="Description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                />
+
+                <input
+                    type="number"
+                    placeholder="Confidence"
+                    value={confidence}
+                    onChange={(e) => setConfidence(Number(e.target.value))}
+                />
+
+                <button type="submit">Save</button>
+            </form>
+        </>
+    )
 }
 
 export default DecisionForm
